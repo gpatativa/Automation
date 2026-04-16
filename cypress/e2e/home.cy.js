@@ -1,6 +1,6 @@
 // ============================================================
 // Cenários de teste: Blog Agibank – Pesquisa de Artigos
-// URL base: https://blog.agibank.com.br/
+// URL base: https://blog.agibank.com.br/institucional/
 // ============================================================
 
 /**
