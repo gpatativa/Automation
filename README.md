@@ -18,66 +18,104 @@ Projeto de automação de testes end-to-end para a funcionalidade de **pesquisa 
 
 ## Pré-requisitos
 
-| Ferramenta | Versão mínima |
-|------------|--------------|
-| Node.js    | 18.x         |
-| Yarn       | 4.x          |
+| Ferramenta | Versão utilizada |
+|------------|-----------------|
+| Node.js    | 18.x ou superior |
+| Yarn       | 4.12.0          |
+| Cypress    | 15.13.1         |
 
-> Verifique as versões instaladas com `node -v` e `yarn -v`.
+Verifique as versões instaladas:
+
+```bash
+node -v
+yarn -v
+```
+
+> Caso não tenha o Yarn instalado: `npm install -g yarn`
 
 ---
 
 ## Instalação
 
+### 1. Clone o repositório
+
 ```bash
-# Clone o repositório
 git clone https://github.com/gpatativa/Automation.git
 cd Automation
+```
 
-# Instale as dependências
+### 2. Instale as dependências
+
+```bash
 yarn install
 ```
+
+> As dependências estão listadas em `package.json`. O Cypress será instalado automaticamente como dependência de desenvolvimento.
 
 ---
 
 ## Configuração
 
-As configurações centrais do projeto estão em `cypress.config.js`:
+As configurações centrais do projeto estão em `cypress.config.js`. Nenhum arquivo `.env` é necessário.
 
-| Propriedade            | Valor                                          |
-|------------------------|------------------------------------------------|
-| `baseUrl`              | `https://blog.agibank.com.br/institucional/`   |
-| `viewportWidth`        | 1280                                           |
-| `viewportHeight`       | 720                                            |
-| `defaultCommandTimeout`| 10 000 ms                                      |
-| `pageLoadTimeout`      | 30 000 ms                                      |
-
-Não é necessário nenhum arquivo `.env` para executar os testes.
+| Propriedade             | Valor                                        |
+|-------------------------|----------------------------------------------|
+| `baseUrl`               | `https://blog.agibank.com.br/institucional/` |
+| `viewportWidth`         | 1280                                         |
+| `viewportHeight`        | 720                                          |
+| `defaultCommandTimeout` | 10 000 ms                                    |
+| `pageLoadTimeout`       | 30 000 ms                                    |
 
 ---
 
 ## Execução dos Testes
 
-### Modo interativo (Cypress Test Runner)
+### Modo interativo — Cypress Test Runner (recomendado para desenvolvimento)
 
-Abre a interface gráfica do Cypress para acompanhar os testes visualmente:
+Abre a interface gráfica do Cypress para acompanhar os testes passo a passo com inspeção visual do navegador:
 
 ```bash
 yarn cypress open
 ```
 
-### Modo headless (linha de comando / CI)
+**Passo a passo:**
+1. Execute o comando acima no terminal
+2. Selecione **E2E Testing**
+3. Escolha o navegador de sua preferência (Chrome, Firefox, Edge)
+4. Clique em **Start E2E Testing**
+5. Na lista de specs, clique em **home.cy.js** para executar os testes
 
-Executa todos os testes sem abrir o navegador:
+---
+
+### Modo headless — linha de comando (recomendado para CI/CD)
+
+Executa todos os testes sem abrir interface gráfica e exibe o resultado no terminal:
 
 ```bash
 yarn cypress run
 ```
 
-### Executar apenas os testes do Blog Agibank
+---
+
+### Executar apenas a suíte do Blog Agibank
 
 ```bash
 yarn cypress run --spec "cypress/e2e/home.cy.js"
+```
+
+---
+
+### Escolher navegador específico no modo headless
+
+```bash
+# Chrome
+yarn cypress run --browser chrome
+
+# Firefox
+yarn cypress run --browser firefox
+
+# Edge
+yarn cypress run --browser edge
 ```
 
 ---
@@ -88,12 +126,13 @@ yarn cypress run --spec "cypress/e2e/home.cy.js"
 
 **Objetivo:** Garantir que o campo de busca e os elementos associados são exibidos corretamente ao clicar no ícone de lupa.
 
-**Passos:**
-1. Acessar `https://blog.agibank.com.br/institucional/`
-2. Clicar no ícone de lupa no header
-3. Validar que o campo de busca com placeholder `"Digite sua busca"` está visível
-4. Validar que o botão de submissão da pesquisa (`#search_submit`) está visível
-5. Validar que o link `"Simular empréstimo"` está visível
+| # | Passo | Resultado Esperado |
+|---|-------|--------------------|
+| 1 | Acessar `https://blog.agibank.com.br/institucional/` | Página carregada com sucesso |
+| 2 | Clicar no ícone de lupa no header | Campo de busca expandido |
+| 3 | Verificar campo de busca | Placeholder `"Digite sua busca"` visível |
+| 4 | Verificar botão de pesquisa | `#search_submit` visível |
+| 5 | Verificar link de simulação | `"Simular empréstimo"` visível |
 
 ---
 
@@ -101,16 +140,35 @@ yarn cypress run --spec "cypress/e2e/home.cy.js"
 
 **Objetivo:** Garantir que a pesquisa retorna resultados relevantes e que o usuário é redirecionado corretamente ao clicar no primeiro resultado.
 
-**Passos:**
-1. Acessar `https://blog.agibank.com.br/institucional/`
-2. Clicar no ícone de lupa no header
-3. Validar exibição do campo de busca
-4. Digitar `"Pix"` no campo de busca
-5. Validar que a lista de resultados é exibida e não está vazia
-6. Validar que pelo menos um resultado contém a palavra "Pix" (case-insensitive)
-7. Clicar no primeiro resultado da lista
-8. Validar que o usuário foi redirecionado para `https://blog.agibank.com.br/pix-automatico/`
-9. Validar que o título `"Pix automático: o que é e como utilizar"` está visível na página
+| # | Passo | Resultado Esperado |
+|---|-------|--------------------|
+| 1 | Acessar `https://blog.agibank.com.br/institucional/` | Página carregada com sucesso |
+| 2 | Clicar no ícone de lupa | Campo de busca expandido |
+| 3 | Verificar campo de busca | Placeholder visível |
+| 4 | Digitar `"Pix"` no campo | Texto inserido |
+| 5 | Verificar lista de resultados | Lista exibida e não vazia |
+| 6 | Verificar conteúdo dos resultados | Pelo menos um resultado contém "Pix" |
+| 7 | Clicar no primeiro resultado | Redirecionamento iniciado |
+| 8 | Verificar URL | `https://blog.agibank.com.br/pix-automatico/` |
+| 9 | Verificar título do artigo | `"Pix automático: o que é e como utilizar"` visível |
+
+---
+
+### CT03 – Pesquisa com termo inválido (sem resultados)
+
+**Objetivo:** Garantir que o sistema exibe as mensagens de ausência de resultados corretamente, tanto no live search quanto na página de resultados.
+
+| # | Passo | Resultado Esperado |
+|---|-------|--------------------|
+| 1 | Acessar `https://blog.agibank.com.br/institucional/` | Página carregada com sucesso |
+| 2 | Clicar no ícone de lupa | Campo de busca expandido |
+| 3 | Verificar campo de busca | Placeholder visível |
+| 4 | Digitar `"Pesquisa Invalida"` | Texto inserido |
+| 5 | Verificar label do live search | `"No results found"` exibido |
+| 6 | Clicar no botão de busca | Redirecionamento para página de resultados |
+| 7 | Verificar URL | Query string contém o termo buscado |
+| 8 | Verificar título da página | `"Resultados encontrados para: Pesquisa Invalida"` |
+| 9 | Verificar mensagem de ausência | `"Lamentamos, mas nada foi encontrado..."` visível |
 
 ---
 
@@ -120,14 +178,12 @@ yarn cypress run --spec "cypress/e2e/home.cy.js"
 Automation/
 ├── cypress/
 │   ├── e2e/
-│   │   └── home.cy.js          # Cenários de teste do blog (CT01 e CT02)
-│   ├── fixtures/
-│   │   └── example.json        # Fixtures de dados (reservado para expansão)
+│   │   └── home.cy.js          # Suíte de testes: CT01, CT02 e CT03      
 │   └── support/
 │       ├── commands.js         # Comandos customizados reutilizáveis
 │       └── e2e.js              # Configuração global dos testes e2e
 ├── cypress.config.js           # Configuração central do Cypress
-├── package.json
+├── package.json                # Dependências e metadados do projeto
 └── README.md
 ```
 
@@ -136,11 +192,11 @@ Automation/
 ## Boas Práticas Aplicadas
 
 | Prática | Descrição |
-|--------|-----------|
-| **Seletores centralizados** | Todos os seletores CSS ficam no objeto `selectors` no topo do arquivo de teste, facilitando manutenção |
-| **Comando customizado** | `cy.abrirCampoDeBusca()` encapsula a ação de abertura do campo de busca, eliminando duplicação de código entre cenários |
+|---------|-----------|
+| **Seletores centralizados** | Objeto `selectors` no topo do arquivo de teste — um único ponto de manutenção para todos os seletores CSS |
+| **Comando customizado** | `cy.abrirCampoDeBusca()` encapsula a ação repetida de abertura do campo de busca, eliminando duplicação |
 | **`beforeEach` para setup** | Cada teste começa de um estado limpo, visitando a URL base automaticamente |
-| **`context` para agrupamento** | Os cenários são agrupados com `context()` dentro do `describe()` principal, organizando a suíte por funcionalidade |
+| **`context` para agrupamento** | Cenários agrupados com `context()` dentro do `describe()` principal, organizando a suíte por funcionalidade |
 | **Assertivas explícitas** | Cada passo possui sua respectiva asserção, tornando falhas imediatas e fáceis de diagnosticar |
-| **`baseUrl` no config** | A URL base é definida em um único lugar (`cypress.config.js`), evitando repetição e facilitando troca de ambiente |
-| **Comentários descritivos** | Passos e validações comentados no próprio teste para rastreabilidade com os casos de uso |
+| **`baseUrl` no config** | URL base definida em um único lugar (`cypress.config.js`), facilitando troca de ambiente |
+| **Comentários descritivos** | Passos e validações comentados no teste para rastreabilidade com os casos de uso |
